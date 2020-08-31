@@ -2,7 +2,7 @@ if (location.protocol != 'http:')
 	location.href = 'http:' + window.location.href.substring(window.location.protocol.length);
 //require('https').globalAgent.options.rejectUnauthorized = false;
 
-var socket = io('128.113.192.44:1498');
+var socket = io('localhost:1498');
 
 var canvas = document.getElementById('ctx');
 canvas.width = window.innerWidth;
