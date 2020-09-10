@@ -2,12 +2,14 @@ var http = require('http');
 var express = require('express');
 var app = express();
 
+var port = 10000;
+
 console.log('Server started');
 console.log('Enabling express...');
 app.use('/',express.static(__dirname + '/client'));
 var httpServer = http.createServer(app);
-httpServer.listen(1498);
-console.log("Express started");
+httpServer.listen(port);
+console.log("Server started on port " + port);
 var io = require('socket.io')(httpServer);
 
 var players = {};
