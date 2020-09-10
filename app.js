@@ -376,7 +376,7 @@ function newRace(){
 
 function update(){
 	ops++;
-	if(globalTimer++ > 6000)
+	if(globalTimer++ > 6000 || (globalTimer > 300 && playersStillRacing == 0))
 		newRace();
 	if(ops < 2)
 		setTimeout(update, 20);
