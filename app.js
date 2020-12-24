@@ -2,20 +2,21 @@ var http = require('http');
 var express = require('express');
 var app = express();
 
-var port = 10000;
+var port = 10001;
 
 console.log('Server started');
 console.log('Enabling express...');
-app.use('/',express.static(__dirname + '/client'));
+app.use('/ringsurf/',express.static(__dirname + '/client'));
 var httpServer = http.createServer(app);
 httpServer.listen(port);
 console.log("Server started on port " + port);
-var io = require('socket.io')(httpServer);
+var io = require('socket.io')(httpServer, {"path": "/ringsurf/io"});
 
 var players = {};
 var sockets = {};
 var rings = {};
 
+var playersStillRacing = 0;
 var globalTimer = -175, lag = 0, ops = 0;
 var wheelRadius = 20, springiness = 1;
 var speedMult = .1;
@@ -330,7 +331,6 @@ function sendAll(out, data){
 }
 
 
-
 newRace();
 setTimeout(update,3000);
 function newRace(){
@@ -378,15 +378,17 @@ function newRace(){
 
 function update(){
 	ops++;
-	if(globalTimer++ > 6000 || (globalTimer > 300 && playersStillRacing == 0))
+	if(globalTimer++ > 6000 || (globalTimer > 300) && playersStillRacing == 0)
 		newRace();
 	if(ops < 2)
 		setTimeout(update, 20);
 	var d = new Date();
 	var lagTimer = d.getTime();
 	var pack = {};
+	playersStillRacing = 0;
 	for(var i in players){
 		var player = players[i];
+		if(!player.finished) playersStillRacing++;
 		player.tick();
 		send(i, 'you', {lx:player.lx,ly:player.ly});
 		pack[player.id] = ({finished:player.finished,timer:player.timer,score:player.score,trail:player.trail,w1x:player.w1x,w1y:player.w1y,w2x:player.w2x,w2y:player.w2y,lx:player.lx,ly:player.ly,la:player.la,color:player.color,name:player.name,space:player.space});

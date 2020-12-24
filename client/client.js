@@ -1,8 +1,4 @@
-if (location.protocol != 'http:')
-	location.href = 'http:' + window.location.href.substring(window.location.protocol.length);
-//require('https').globalAgent.options.rejectUnauthorized = false;
-
-var socket = io('localhost:1498');
+var socket = io('alexhontz.com', {path:'/ringsurf/io'});
 
 var canvas = document.getElementById('ctx');
 canvas.width = window.innerWidth;
@@ -55,7 +51,7 @@ function loadImage (name, src) {
 	Img[name].src = src;
 }
 function loadAllImages(){
-	loadImage("bike", '/img/bike.png');
+	loadImage("bike", 'img/bike.png');
 }
 
 
