@@ -264,15 +264,9 @@ function rLB(){
 		write(place + ".", w - 248, (i+4)*16);
 		ctx.textAlign = "right";
 		write(intToTime(lb[i].timer), w - 48 - 16, (i+4)*16);
-		if(lb[i].finished && i < 3){
-			ctx.fillStyle = ["gold", "silver","bronze"][i];;
-			ctx.font = "32px Telegrama";
-			write(lb[i].name, w-400, i*32+64);
-		}
 	}
 }
 function rTut(){
-	console.log(lx + " " + ly);
 	if(lx*lx+ly*ly>=1080*1080 && didW) return;
 	ctx.save();
 	ctx.textAlign = "center";

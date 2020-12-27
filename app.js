@@ -229,6 +229,8 @@ io.sockets.on('connection', function(socket){
 			return;
 		var text = player.name + " left the game!";
 		sendAll("chat", {msg:text});
+		delete players[socket.id];
+		return;
 	});
 	socket.on('key',function(data){
 		var player = players[socket.id];
