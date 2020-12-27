@@ -22,7 +22,6 @@ for (var i = 0; i < chatLength; i++)
 var ops = 0;
 var didW = false;
 var empty = 0;
-var multiplayer = true;
 
 var trails = {};
 
@@ -74,10 +73,8 @@ function render(){
 	ctx.restore();
 	
 	rMinimap();
-	if(multiplayer)
-		rChat();
-	if(multiplayer)
-		rLB();
+	rChat();
+	rLB();
 	rTut();
 	rTimer();
 	ops--;
@@ -159,8 +156,6 @@ document.onkeydown = function (event) {
 			socket.emit('key', { inputId: 'a', state: true });
 		else if (event.keyCode === 68 || event.keyCode === 39)//d
 			socket.emit('key', { inputId: 'd', state: true });
-		else if (event.keyCode === 72)//h
-			multiplayer = !multiplayer;
 		else if (event.keyCode === 32)//space
 			socket.emit('key', { inputId: ' ', state: true });
 		else
@@ -381,8 +376,7 @@ function rPlayers(){
 		ctx.translate(rendX,rendY);
 		ctx.rotate(selfo.la);
 		ctx.fillStyle = selfo.trail?flasher:selfo.color;
-		if(multiplayer)
-			write(selfo.name, 0, -100);
+		write(selfo.name, 0, -100);
 		ctx.drawImage(img, -img.width / 4, -img.height / 2, img.width/2, img.height/2);
 		ctx.restore();
 
