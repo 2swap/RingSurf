@@ -13,7 +13,7 @@ var ctx = canvas.getContext("2d");
 var shift = false;
 var keyboard = {};
 var typing = false;
-var chatLength = 30, chatScroll = 0, globalChat = 0, preChatArr = {}, chati = 0;
+var chatLength = 15, globalChat = 0, chatMessage = "", preChatArr = {}, chati = 0;
 var messages = {};
 for (var i = 0; i < chatLength; i++)
 	messages[i] = "";
@@ -129,14 +129,22 @@ setInterval(function(){
 
 //input
 document.onkeydown = function (event) {
-//	if (event.keyCode === 16)
-//		shift = true;
-//	else if(typing)
-//		if (event.keyCode == 13){
-//			socket.emit('chat', chatMessage);
-//			typing = false;
-//		}
-//	else {
+	if (event.keyCode === 16) {
+		console.log("a");
+		shift = true;
+	} else if(typing) {
+		console.log("b");
+		if (event.keyCode == 13){
+			socket.emit('chat', {msg:chatMessage});
+			console.log("sent " + chatMessage);
+			chatMessage = "";
+			typing = false;
+		}
+		else {
+			chatMessage += String.fromCharCode(event.keyCode);
+		}
+	} else {
+		console.log("c");
 		didW = true;
 		if(keyboard[event.keyCode] == true)
 			return;
@@ -157,7 +165,7 @@ document.onkeydown = function (event) {
 			socket.emit('key', { inputId: ' ', state: true });
 		else
 			didW = false;
-//	}
+	}
 }
 document.onkeyup = function (event) {
 	if(keyboard[event.keyCode] == false)
@@ -211,15 +219,17 @@ function rChat(){
 	ctx.textAlign = "left";
 	ctx.font = "11px Telegrama";
 	
+	ctx.fillStyle = "lime";
+	write(">"+chatMessage,16,h-20);
+
 	ctx.fillStyle = "white";
-	for (var i = 0; i < 100; i++){
+	for (var i = 0; i < chatLength; i++){
 		ctx.globalAlpha = (19-i) / 20;
 		write(messages[i],16,h-32-12*i);
 	}
 	ctx.globalAlpha = 1;
 }
 function rLB(){
-	
 	ctx.fillStyle = 'yellow';
 	ctx.font = "24px Telegrama";
 	ctx.textAlign = "center";
@@ -262,17 +272,16 @@ function rLB(){
 	}
 }
 function rTut(){
-	if(didW)
-		return;
+	console.log(lx + " " + ly);
+	if(lx*lx+ly*ly>=1080*1080 && didW) return;
 	ctx.save();
 	ctx.textAlign = "center";
 	ctx.fillStyle = 'cyan';
 	var date = new Date();
 	var ms = date.getTime();
 	ctx.font = (5 * Math.sin(ms / 180) + 35) + "px Telegrama";
-	write("Use WASD to move!", w / 2, 48);
-	write("Use space to pass through walls!", w / 2, 80);
-	write("Go as far right as you can!", w / 2, 112);
+	if(!didW) write("Use WASD to move!", w / 2, 48);
+	else if(lx*lx + ly*ly < 1080*1080) write("Use space to pass through walls!", w / 2, 48);
 	ctx.restore();
 }
 function rTimer(){

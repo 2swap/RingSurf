@@ -162,16 +162,14 @@ var Player = function(i){
 		}
 	}
 	self.changeName = function(newName){
-		if(newName.length > 16 || pass.length < 1){
+		if(newName.length > 16){
 			send(self.id, "chat", {msg:"Name must be 1-16 characters."});
 			return;
 		}
 		self.name = newName;
-		self.save();
 		send(self.id, "chat", {msg:"Name changed successfully."});
 	}
 	self.sendMap = function(){
-		send(self.id, "chat", {msg:"New map loaded."});
 		send(self.id, "newMap", {rings:rings});
 	}
 	self.respawn = function(){
@@ -256,11 +254,8 @@ io.sockets.on('connection', function(socket){
 		if(typeof data.msg !== "string")
 			return;
 		data.msg = data.msg.trim();
-		if(player.name !== "GUEST" && data.msg.startsWith("/")){
-			if(data.msg.startsWith("/name "))
-				player.changeName(data.msg.substring(6));
-			else
-				send(player.id, "chat", {msg:"Unknown Command."});
+		if(data.msg.startsWith("NAME ")) {
+			player.changeName(data.msg.substring(5));
 			return;
 		}
 		if(typeof data.msg !== 'string' || data.msg.length == 0 || data.msg.length > 128)
@@ -271,8 +266,7 @@ io.sockets.on('connection', function(socket){
 			spaces += " ";
 			
 		const finalMsg = (player.name + ": " + data.msg);
-		if(player.globalChat == 0)
-			sendAll('chat', {msg:finalMsg});
+		sendAll('chat', {msg:finalMsg});
 	});
 });
 function findBisector(a1, a2){
